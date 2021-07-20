@@ -30,26 +30,26 @@ public class IntakeSubsystem extends Subsystem {
     public final DigitalInput LimitSwitchTop = new DigitalInput(1);
     public final DigitalInput LimitSwitchBottom = new DigitalInput(0); 
 
-    public void writePeriodicOutputs() {
-        mIntakeMotor.set(ControlMode.PercentOutput, mPeriodicIO.intake_demand);
-    }
-
     public synchronized void armMovement(boolean up, boolean down){
         if(up){
-            mIntakeMotor.set(ControlMode.PercentOutput, -0.5);
+            mPeriodicIO.intake_demand = -0.3;
             if(!LimitSwitchTop.get()){
-                mIntakeMotor.set(ControlMode.PercentOutput, 0.0);
+                mPeriodicIO.intake_demand = 0;
             }
         }
         else if(down){
-            mIntakeMotor.set(ControlMode.PercentOutput, 0.3);
+            mPeriodicIO.intake_demand = 0.5;
             if(!LimitSwitchBottom.get()){
-                mIntakeMotor.set(ControlMode.PercentOutput, 0.0);
+                mPeriodicIO.intake_demand = 0;
             }
         }
         else{
-            mIntakeMotor.set(ControlMode.PercentOutput, 0.0);
+            mPeriodicIO.intake_demand = 0;
         }
+    }
+
+    public void writePeriodicOutputs() {
+        mIntakeMotor.set(ControlMode.PercentOutput, mPeriodicIO.intake_demand);
     }
 
     @Override
