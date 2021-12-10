@@ -2,15 +2,17 @@
 /* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
+/* the project.     
 /*----------------------------------------------------------------------------*/
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.loops.Looper;
-import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.*;
+
 
 public class Robot extends TimedRobot {
 	Looper mEnabledLooper = new Looper();
@@ -19,15 +21,28 @@ public class Robot extends TimedRobot {
 	private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
 
 	private Drive mDrive;
+	private Arm mArm;
+	private Belt mBelt;
+	private Turret mTurret;
+	private Piston mPiston;
+	private Flywheel mFlywheel;
+	private Vision mVision;
 	
-	private Joystick mDriveStick;
+	private XboxController mXbox;
+
 
 	@Override
 	public void robotInit() {
 		mDrive = Drive.getInstance();
-		mSubsystemManager.setSubsystems(mDrive);
+		mArm = Arm.getInstance();
+		mBelt = Belt.getInstance();
+		mTurret = Turret.getInstance();
+		mVision = Vision.getInstance();
+		mPiston = Piston.getInstance();
+		mFlywheel = Flywheel.getInstance();
+		mSubsystemManager.setSubsystems(mDrive, mArm, mBelt, mTurret, mVision, mPiston, mFlywheel);
 
-		mDriveStick = new Joystick(Constants.kDriveStickPort);
+		mXbox = new XboxController(Constants.kDriveStickPort);
 
 		mSubsystemManager.registerEnabledLoops(mEnabledLooper);
 		mSubsystemManager.registerDisabledLoops(mDisabledLooper);
@@ -53,7 +68,18 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		//mDrive.setCheesyishDrive(mThrottleStick.getRawAxis(1), -mTurnStick.getRawAxis(0), mTurnStick.getRawButton(1));
-		mDrive.setCheesyishDrive(mDriveStick.getRawAxis(1), -mDriveStick.getRawAxis(4), mDriveStick.getRawButton(1));
+
+		mDrive.setCheesyishDrive(mXbox.getRawAxis(1), mXbox.getRawAxis(4), mXbox.getRawButton(1));
+		mArm.setArm(mXbox.getAButton(), mXbox.getBButton());
+		mBelt.setBelt(mXbox.getXButton(), mXbox.getYButton());
+		if (mXbox.getPOV() != -1) {
+			mTurret.setTurretAuto(mVision.x);
+		} else {
+			mTurret.setTurretManual(mXbox.getTriggerAxis(Hand.kLeft) - mXbox.getTriggerAxis(Hand.kRight));
+		}
+		mPiston.setPiston(mXbox.getRawButton(5));
+		mFlywheel.setFlywheel(mXbox.getRawButton(6));
+
 	}
+
 }
