@@ -4,8 +4,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class IntakeSubsystem extends Subsystem {
 
@@ -32,19 +30,19 @@ public class IntakeSubsystem extends Subsystem {
 
     public synchronized void armMovement(boolean up, boolean down){
         if(up){
-            mPeriodicIO.intake_demand = -0.3;
             if(!LimitSwitchTop.get()){
-                mPeriodicIO.intake_demand = 0;
+                mIntakeMotor.set(ControlMode.PercentOutput, 0);
             }
+            else mIntakeMotor.set(ControlMode.PercentOutput, -0.5);
         }
         else if(down){
-            mPeriodicIO.intake_demand = 0.5;
             if(!LimitSwitchBottom.get()){
-                mPeriodicIO.intake_demand = 0;
+                mIntakeMotor.set(ControlMode.PercentOutput, 0);
             }
+            else mIntakeMotor.set(ControlMode.PercentOutput, 0.3);
         }
         else{
-            mPeriodicIO.intake_demand = 0;
+            mIntakeMotor.set(ControlMode.PercentOutput, 0);
         }
     }
 
@@ -68,9 +66,9 @@ public class IntakeSubsystem extends Subsystem {
     @Override
     public void outputTelemetry() {
         // TODO Auto-generated method stub
-        SmartDashboard.putNumber("Motor Output: ", mIntakeMotor.getMotorOutputPercent());
-        SmartDashboard.putBoolean("lim up", LimitSwitchTop.get());
-        SmartDashboard.putBoolean("lim down", LimitSwitchBottom.get());
+        // SmartDashboard.putNumber("Motor Output: ", mIntakeMotor.getMotorOutputPercent());
+        // SmartDashboard.putBoolean("lim up", LimitSwitchTop.get());
+        // SmartDashboard.putBoolean("lim down", LimitSwitchBottom.get());
 
     }
 }

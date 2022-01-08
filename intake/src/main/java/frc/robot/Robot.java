@@ -13,7 +13,11 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.loops.Looper;
 import frc.robot.subsystems.Belt;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Turret; 
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.Pneumatics;
+import frc.robot.subsystems.Flywheel;
+import frc.robot.subsystems.Vision;
 
 public class Robot extends TimedRobot {
 	Looper mEnabledLooper = new Looper();
@@ -26,10 +30,18 @@ public class Robot extends TimedRobot {
 	private IntakeSubsystem mIntake;
 
 	private Belt mBelt;
+
+	public static Turret mTurret; 
+
+	private Pneumatics mPiston;
+
+	public static Flywheel mFlywheel;
+
+	private Vision mVision;
 	
 	private Joystick mDriveStick;
 
-	private Joystick mController;
+	public static Joystick mController;
 
 	public static boolean xbottomflag = false;
 	public static boolean xbottom = false;
@@ -37,21 +49,27 @@ public class Robot extends TimedRobot {
 	public static boolean bButtonFlag = false;
 	public static boolean bButton = false;
 
-	
 
 	@Override
 	public void robotInit() {
 		mDrive = Drive.getInstance();
 		mIntake = IntakeSubsystem.getInstance();
 		mBelt = Belt.getInstance();
+		mTurret = Turret.getInstance();
+		mPiston = Pneumatics.getInstance();
+		mFlywheel = Flywheel.getInstance();
+		mVision = Vision.getInstance();
 
 		mSubsystemManager.setSubsystems(mDrive);
-		mSubsystemManager.setSubsystems(mIntake);
-		mSubsystemManager.setSubsystems(mBelt);
+		// mSubsystemManager.setSubsystems(mIntake);
+		// mSubsystemManager.setSubsystems(mBelt);
+		// mSubsystemManager.setSubsystems(mTurret);
+		// mSubsystemManager.setSubsystems(mPiston);
+		// mSubsystemManager.setSubsystems(mFlywheel);
+		// mSubsystemManager.setSubsystems(mVision);
 
 
 		mDriveStick = new Joystick(Constants.kDriveStickPort);
-
 		mController = new Joystick(Constants.kDriveStickPort);
 		
 
@@ -97,7 +115,13 @@ public class Robot extends TimedRobot {
 		//mDrive.setCheesyishDrive(mThrottleStick.getRawAxis(1), -mTurnStick.getRawAxis(0), mTurnStick.getRawButton(1));
 		mSubsystemManager.outputToSmartDashboard();
 		mDrive.setCheesyishDrive(mDriveStick.getRawAxis(1), -mDriveStick.getRawAxis(4), mDriveStick.getRawButton(1));
-		mIntake.armMovement(mController.getRawButton(5), mController.getRawButton(6));
-		mBelt.beltRotation(xbottom, bButton);
+		// mIntake.armMovement(mController.getRawButton(5), mController.getRawButton(6));
+		// mBelt.beltRotation(xbottom, bButton);
+		// mVision.limelightTurret();
+		//mFlywheel.flywheelRotation(mController.getRawButton(7), 5000);
+		//mPiston.pistonToggle(mController.getRawButton(8));
+
+		//SmartDashboard.putNumber("Trigger Pecentage left", mController.getRawAxis(2));
+		//SmartDashboard.putNumber("Trigger Pecentage Right", mController.getRawAxis(3));
 	}
 }
